@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RankED — Class Diagrams</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f172a;
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    padding: 40px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 { color: #f1f5f9; font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 6px; }
+  .sub { color: #64748b; font-size: 12px; text-align: center; margin-bottom: 40px; }
+
+  .section { width: 100%; max-width: 1200px; margin-bottom: 56px; }
+  .section-title {
+    font-size: 15px; font-weight: 600; color: #94a3b8;
+    border-left: 3px solid #3b82f6; padding-left: 12px;
+    margin-bottom: 16px; letter-spacing: 0.3px;
+  }
+  .section-title.green { border-left-color: #22c55e; }
+  .section-title.amber { border-left-color: #f59e0b; }
+  .section-title.purple { border-left-color: #a78bfa; }
+
+  .wrap {
+    background: #1e293b; border: 1px solid #334155;
+    border-radius: 14px; padding: 28px;
+    overflow-x: auto;
+  }
+  .wrap svg { width: 100% !important; height: auto !important; min-height: 200px; }
+
+  .note {
+    margin-top: 14px; background: #162032; border: 1px solid #1e3a5f;
+    border-radius: 8px; padding: 12px 16px;
+    font-size: 11px; color: #94a3b8; line-height: 1.7;
+  }
+  .note strong { color: #93c5fd; }
+  code { background: #0f172a; border-radius: 3px; padding: 1px 5px; font-size: 10px; color: #7dd3fc; }
+  .err { color: #f87171; font-size: 13px; padding: 16px; display: none; }
+</style>
+</head>
+<body>
+
+<h1>RankED — Class Diagrams</h1>
+<p class="sub">Three focused diagrams: Strategy pattern · Observer pattern · Factory pattern · Data models</p>
+
+<!-- ══ DIAGRAM 1: Strategy Pattern ══ -->
+<div class="section">
+  <div class="section-title amber">Diagram 1 — Strategy Pattern (ScoringStrategy.js)</div>
+  <div class="wrap" id="d1"><p class="err" id="e1"></p></div>
+  <div class="note">
+    <strong>Why Strategy?</strong> Brute-force would be one giant <code>if-else</code> inside <code>submitAnswer()</code> — every new exam type means touching GameEngine. Strategy extracts each algorithm into its own class behind a common interface (<code>IScoringStrategy</code>). GameEngine calls <code>strategy.calculate()</code> without knowing which strategy it has — that's <strong>OCP</strong> (open for extension, closed for modification) and <strong>polymorphism</strong> in action. <code>ScoringStrategyResolver</code> acts as the single factory entry point — callers never call <code>new JEEMainStrategy()</code> directly (<strong>DIP</strong>).
+  </div>
+</div>
+
+<!-- ══ DIAGRAM 2: Observer Pattern ══ -->
+<div class="section">
+  <div class="section-title green">Diagram 2 — Observer Pattern (LeaderboardObserver.js)</div>
+  <div class="wrap" id="d2"><p class="err" id="e2"></p></div>
+  <div class="note">
+    <strong>Why Observer?</strong> Brute-force: <code>submitAnswer()</code> directly calls <code>io.emit()</code> — GameEngine is coupled to socket.io and any future analytics. Observer decouples them: <code>BattleSubject</code> just calls <code>notify()</code>, and any number of observers react independently. New observer (e.g. <code>AnalyticsObserver</code>) added without touching GameEngine — pure <strong>OCP</strong>. Each observer has <strong>SRP</strong>: <code>LeaderboardObserver</code> only manages leaderboard state and broadcast.
+  </div>
+</div>
+
+<!-- ══ DIAGRAM 3: Factory Pattern ══ -->
+<div class="section">
+  <div class="section-title purple">Diagram 3 — Factory Pattern (QuestionFactory.js)</div>
+  <div class="wrap" id="d3"><p class="err" id="e3"></p></div>
+  <div class="note">
+    <strong>Why Factory?</strong> Three question types (MCQ, Integer, MultipleCorrect) each validate answers differently. Brute-force: scattered <code>if type === "MCQ"</code> blocks everywhere in routes and GameEngine. Factory gives a single entry point <code>QuestionFactory.create(type, data)</code> — caller gets back any question object and just calls <code>.validate(answer)</code>. This is <strong>abstraction</strong> (hide which class is instantiated), <strong>polymorphism</strong> (all share same interface), and <strong>DIP</strong> (callers depend on the factory abstraction, not concrete classes).
+  </div>
+</div>
+
+<!-- ══ DIAGRAM 4: Data Models + GameEngine ══ -->
+<div class="section">
+  <div class="section-title">Diagram 4 — Data Models + Core Services (models + GameEngine + SocketManager)</div>
+  <div class="wrap" id="d4"><p class="err" id="e4"></p></div>
+  <div class="note">
+    <strong>Key relationships:</strong> <code>GameEngine</code> <em>uses</em> (dependency) all three patterns — it holds a <code>Map</code> of active match states, each containing a resolved <code>IScoringStrategy</code> and a <code>BattleSubject</code>. <code>SocketManager</code> <em>owns</em> (composition) a <code>GameEngine</code> — one GameEngine per server. Mongoose models are shown as classes with their fields and notable methods (<code>comparePassword</code>, <code>getPublicProfile</code>, <code>getRandomQuestions</code>).
+  </div>
+</div>
+
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+
+const dark = true;
+await document.fonts.ready;
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'dark',
+  themeVariables: {
+    fontSize: '13px',
+    fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+    darkMode: dark,
+    background: '#1e293b',
+    primaryColor: '#1e293b',
+    primaryTextColor: '#e2e8f0',
+    primaryBorderColor: '#475569',
+    lineColor: '#64748b',
+    classBorder: '#475569',
+    classText: '#e2e8f0',
+    edgeLabelBackground: '#1e293b',
+    noteBkgColor: '#162032',
+    noteTextColor: '#94a3b8',
+  }
+});
+
+const diagrams = [
+  // ── 1: Strategy ──
+  { id: 'd1', err: 'e1', src: `classDiagram
+    class IScoringStrategy {
+        <<interface>>
+        +calculate(isCorrect, timeTaken, difficulty) int
+        +getName() string
+    }
+    class JEEMainStrategy {
+        +calculate(isCorrect, timeTaken, difficulty) int
+        +getName() string
+    }
+    class JEEAdvancedStrategy {
+        +calculate(isCorrect, timeTaken, difficulty, partialScore) int
+        +getName() string
+    }
+    class SpeedBasedStrategy {
+        +calculate(isCorrect, timeTaken, difficulty) int
+        +getName() string
+    }
+    class DifficultyWeightedStrategy {
+        +calculate(isCorrect, timeTaken, difficulty) int
+        +getName() string
+    }
+    class ScoringStrategyResolver {
+        <<utility>>
+        +resolve(strategyName) IScoringStrategy$
+    }
+
+    IScoringStrategy <|-- JEEMainStrategy        : extends
+    IScoringStrategy <|-- JEEAdvancedStrategy    : extends
+    IScoringStrategy <|-- SpeedBasedStrategy     : extends
+    IScoringStrategy <|-- DifficultyWeightedStrategy : extends
+    ScoringStrategyResolver ..> IScoringStrategy : creates
+    ScoringStrategyResolver ..> JEEMainStrategy : instantiates
+    ScoringStrategyResolver ..> JEEAdvancedStrategy : instantiates
+    ScoringStrategyResolver ..> SpeedBasedStrategy : instantiates
+    ScoringStrategyResolver ..> DifficultyWeightedStrategy : instantiates
+` },
+
+  // ── 2: Observer ──
+  { id: 'd2', err: 'e2', src: `classDiagram
+    class IObserver {
+        <<interface>>
+        +update(event, data) void
+    }
+    class BattleSubject {
+        -observers List
+        +subscribe(observer) void
+        +unsubscribe(observer) void
+        +notify(event, data) void
+    }
+    class LeaderboardObserver {
+        -io SocketIO
+        -matchId string
+        -scores Map
+        +update(event, data) void
+        +getRankedLeaderboard() Array
+    }
+
+    IObserver <|-- LeaderboardObserver : extends
+    BattleSubject "1" o-- "0..*" IObserver : observes
+    LeaderboardObserver ..> BattleSubject : subscribes to
+` },
+
+  // ── 3: Factory ──
+  { id: 'd3', err: 'e3', src: `classDiagram
+    class IQuestion {
+        <<interface>>
+        +validate(answer) boolean
+        +getType() string
+        +getSummary() string
+    }
+    class MCQQuestion {
+        -type string
+        -content string
+        -options Array
+        -correctOption int
+        -subject string
+        -topic string
+        -difficulty string
+        -marks int
+        +validate(answer) boolean
+        +getType() string
+        +getSummary() string
+    }
+    class IntegerTypeQuestion {
+        -type string
+        -content string
+        -correctAnswer int
+        -subject string
+        -topic string
+        -difficulty string
+        -marks int
+        +validate(answer) boolean
+        +getType() string
+        +getSummary() string
+    }
+    class MultipleCorrectQuestion {
+        -type string
+        -content string
+        -options Array
+        -correctOptions Array
+        -subject string
+        -topic string
+        -difficulty string
+        -marks int
+        +validate(answer) boolean
+        +getType() string
+        +getSummary() string
+    }
+    class QuestionFactory {
+        <<factory>>
+        +create(type, data) IQuestion$
+        +getSupportedTypes() Array$
+    }
+
+    IQuestion <|-- MCQQuestion             : extends
+    IQuestion <|-- IntegerTypeQuestion     : extends
+    IQuestion <|-- MultipleCorrectQuestion : extends
+    QuestionFactory ..> MCQQuestion             : creates
+    QuestionFactory ..> IntegerTypeQuestion     : creates
+    QuestionFactory ..> MultipleCorrectQuestion : creates
+` },
+
+  // ── 4: Models + Services ──
+  { id: 'd4', err: 'e4', src: `classDiagram
+    class User {
+        +ObjectId _id
+        +string name
+        +string email
+        -string password
+        +string role
+        +string targetExam
+        +Array weakTopics
+        +comparePassword(entered) boolean
+        +getPublicProfile() object
+    }
+    class Match {
+        +ObjectId _id
+        +string mode
+        +string status
+        +Array players
+        +Array questions
+        +string scoringStrategy
+        +string subject
+        +string topic
+        +int duration
+        +ObjectId winnerId
+        +Date startedAt
+        +Date endedAt
+    }
+    class Question {
+        +ObjectId _id
+        +string type
+        +string subject
+        +string topic
+        +string content
+        +Array options
+        +int correctOption
+        +int correctAnswer
+        +Array correctOptions
+        +string difficulty
+        +int marks
+        +boolean isActive
+        +getRandomQuestions(filters, count)$
+    }
+    class Submission {
+        +ObjectId _id
+        +ObjectId matchId
+        +ObjectId userId
+        +ObjectId questionId
+        +Mixed answer
+        +boolean isCorrect
+        +int scoreAwarded
+        +int timeTaken
+    }
+    class GameEngine {
+        -io SocketIO
+        -activeMatches Map
+        +initializeBattle(matchId) Match
+        +submitAnswer(matchId, userId, userName, questionId, answer, timeTaken) object
+        +endBattle(matchId) object
+        +getBattleState(matchId) object
+    }
+    class SocketManager {
+        -io SocketIO
+        -gameEngine GameEngine
+        -connectedUsers Map
+        +initialize() void
+    }
+
+    SocketManager *-- GameEngine       : owns
+    GameEngine ..> Match               : reads and updates
+    GameEngine ..> Question            : reads
+    GameEngine ..> Submission          : creates
+    GameEngine ..> IScoringStrategy    : uses
+    GameEngine ..> BattleSubject       : uses
+    GameEngine ..> QuestionFactory     : uses
+    Match "1" --> "0..*" Question      : references
+    Submission --> Match               : belongs to
+    Submission --> User                : belongs to
+    Submission --> Question            : belongs to
+    Match --> User                     : winner
+` }
+];
+
+for (const { id, err, src } of diagrams) {
+  try {
+    const { svg } = await mermaid.render(id + '-svg', src);
+    document.getElementById(id).innerHTML = svg;
+  } catch(e) {
+    const el = document.getElementById(err);
+    el.style.display = 'block';
+    el.textContent = 'Render error (' + id + '): ' + e.message;
+  }
+}
+</script>
+</body>
+</html>
