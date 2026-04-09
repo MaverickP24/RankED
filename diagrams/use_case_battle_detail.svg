@@ -1,0 +1,91 @@
+<svg width="1360" height="1320" viewBox="0 0 680 660" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" role="img">
+  <title>RankED — battle flow detail</title>
+  <desc>Detailed use case relationships inside the battle module. submit_answer triggers QuestionFactory validate, then ScoringStrategy calculate, then LeaderboardObserver notify — all via GameEngine.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <rect width="680" height="660" fill="#0f172a"/>
+
+  <text x="340" y="20" text-anchor="middle" font-size="13" font-weight="600" fill="#94a3b8">Battle flow — detail</text>
+  <text x="340" y="36" text-anchor="middle" font-size="11" fill="#64748b">GameEngine + SocketManager + ScoringStrategy + LeaderboardObserver</text>
+
+  <!-- Actor boxes -->
+  <rect x="44" y="48" width="148" height="44" rx="8" fill="#1e3a5f" stroke="#378ADD" stroke-width="1"/>
+  <text x="118" y="70" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="600" fill="#bfdbfe">Registered user</text>
+
+  <rect x="488" y="48" width="148" height="44" rx="8" fill="#0a1628" stroke="#475569" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="562" y="70" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#94a3b8">System</text>
+
+  <!-- join_battle -->
+  <ellipse cx="200" cy="152" rx="96" ry="24" fill="#1e3a5f" stroke="#378ADD" stroke-width="1"/>
+  <text x="200" y="152" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#bfdbfe">Join battle room</text>
+  <line x1="150" y1="92" x2="180" y2="128" stroke="#378ADD" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- auto-start extend -->
+  <ellipse cx="480" cy="152" rx="128" ry="24" fill="#0a1628" stroke="#475569" stroke-width="0.8" stroke-dasharray="4 2"/>
+  <text x="480" y="147" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#94a3b8">Auto-start (2 players joined)</text>
+  <text x="480" y="161" text-anchor="middle" font-size="10" fill="#64748b">«extend» on join_battle · SocketManager.js</text>
+  <line x1="296" y1="152" x2="352" y2="152" stroke="#475569" stroke-width="0.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+  <text x="324" y="144" text-anchor="middle" font-size="10" fill="#64748b">«extend»</text>
+
+  <!-- start_battle -->
+  <ellipse cx="200" cy="228" rx="96" ry="24" fill="#1e3a5f" stroke="#378ADD" stroke-width="1"/>
+  <text x="200" y="228" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#bfdbfe">Start battle</text>
+  <line x1="144" y1="92" x2="163" y2="204" stroke="#378ADD" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- initializeBattle include -->
+  <ellipse cx="480" cy="228" rx="128" ry="24" fill="#0a1628" stroke="#475569" stroke-width="0.8" stroke-dasharray="4 2"/>
+  <text x="480" y="223" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#94a3b8">initializeBattle</text>
+  <text x="480" y="237" text-anchor="middle" font-size="10" fill="#64748b">«include» GameEngine.js</text>
+  <line x1="296" y1="228" x2="352" y2="228" stroke="#475569" stroke-width="0.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+  <text x="324" y="220" text-anchor="middle" font-size="10" fill="#64748b">«include»</text>
+
+  <!-- submit_answer -->
+  <ellipse cx="200" cy="316" rx="96" ry="24" fill="#1e3a5f" stroke="#378ADD" stroke-width="1"/>
+  <text x="200" y="316" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#bfdbfe">Submit answer</text>
+  <line x1="140" y1="92" x2="147" y2="292" stroke="#378ADD" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- validate answer -->
+  <ellipse cx="480" cy="296" rx="128" ry="24" fill="#0a1628" stroke="#475569" stroke-width="0.8" stroke-dasharray="4 2"/>
+  <text x="480" y="291" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#94a3b8">Validate answer</text>
+  <text x="480" y="305" text-anchor="middle" font-size="10" fill="#64748b">«include» QuestionFactory.validate()</text>
+  <line x1="296" y1="310" x2="352" y2="300" stroke="#475569" stroke-width="0.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+  <text x="324" y="298" text-anchor="middle" font-size="10" fill="#64748b">«include»</text>
+
+  <!-- calculate score -->
+  <ellipse cx="480" cy="364" rx="128" ry="24" fill="#0a1628" stroke="#475569" stroke-width="0.8" stroke-dasharray="4 2"/>
+  <text x="480" y="359" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#94a3b8">Calculate score</text>
+  <text x="480" y="373" text-anchor="middle" font-size="10" fill="#64748b">«include» ScoringStrategy.calculate()</text>
+  <line x1="480" y1="320" x2="480" y2="340" stroke="#475569" stroke-width="0.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+  <text x="494" y="333" font-size="10" fill="#64748b">«include»</text>
+
+  <!-- notify leaderboard -->
+  <ellipse cx="480" cy="432" rx="136" ry="24" fill="#0a1628" stroke="#475569" stroke-width="0.8" stroke-dasharray="4 2"/>
+  <text x="480" y="427" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#94a3b8">Notify leaderboard</text>
+  <text x="480" y="441" text-anchor="middle" font-size="10" fill="#64748b">«include» LeaderboardObserver.update()</text>
+  <line x1="480" y1="388" x2="480" y2="408" stroke="#475569" stroke-width="0.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+  <text x="494" y="401" font-size="10" fill="#64748b">«include»</text>
+
+  <!-- end_battle -->
+  <ellipse cx="200" cy="508" rx="96" ry="24" fill="#1e3a5f" stroke="#378ADD" stroke-width="1"/>
+  <text x="200" y="508" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#bfdbfe">End battle</text>
+  <line x1="136" y1="92" x2="131" y2="484" stroke="#378ADD" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- determine winner -->
+  <ellipse cx="480" cy="508" rx="128" ry="24" fill="#0a1628" stroke="#475569" stroke-width="0.8" stroke-dasharray="4 2"/>
+  <text x="480" y="503" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#94a3b8">Determine winner + emit</text>
+  <text x="480" y="517" text-anchor="middle" font-size="10" fill="#64748b">«include» GameEngine.endBattle()</text>
+  <line x1="296" y1="508" x2="352" y2="508" stroke="#475569" stroke-width="0.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+  <text x="324" y="500" text-anchor="middle" font-size="10" fill="#64748b">«include»</text>
+
+  <!-- LEGEND -->
+  <line x1="44" y1="556" x2="636" y2="556" stroke="#1e293b" stroke-width="0.5"/>
+  <text x="44" y="575" font-size="11" fill="#94a3b8">Solid blue — user-initiated UC</text>
+  <text x="44" y="593" font-size="11" fill="#64748b">Dashed gray — system / automated UC («include» / «extend»)</text>
+  <text x="44" y="611" font-size="11" fill="#64748b">Dashed arrows — «include»/«extend» dependency between UCs</text>
+  <text x="44" y="629" font-size="11" fill="#60a5fa">Blue arrows — user-to-use-case association</text>
+  <text x="44" y="647" font-size="10" fill="#334155">ScoringStrategy: JEE_MAIN (+4/-1) | JEE_ADVANCED (+3/-1) | SPEED_BASED | DIFFICULTY_WEIGHTED</text>
+</svg>
