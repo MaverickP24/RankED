@@ -7,8 +7,8 @@
 
 ## 🔹 System Design Optimization
 - **WebSocket-Driven Real-time Communication**: Sub-millisecond updates for game state.
-- **In-Memory Battle State**: Map-based match management.
-- **Tiered ELO System**: Competitive matchmaking via `RatingService`.
+- **In-Memory Battle State**: The `GameEngine` manages active matches in a localized Map to reduce database hits during the heat of a "battle."
+- **Real-time Leaderboards**: Dynamic updates ensure students see their relative standing immediately after each submission.
 
 ---
 
@@ -30,9 +30,8 @@
 ---
 
 ## 🔹 SOLID Principles
-- **S**: Single Responsibility (Rating, Sockets, Auth).
-- **O**: Open/Closed (Scoring strategies).
-- **L**: Liskov Substitution (Swappable strategies).
+- **S – Single Responsibility**: Classes like `SocketManager` handle WebSocket connectivity, while `GameEngine` manages game state.
+- **O – Open/Closed**: The scoring system is open for extension (new strategies) but closed for modification. (Swappable strategies).
 - **I**: Interface Segregation (Observer updates).
 - **D**: Dependency Inversion (Socket context).
 
