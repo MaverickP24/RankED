@@ -1,10 +1,10 @@
-# ⚡ RankED – Real-Time JEE Battle Platform
+# RankED -- Real-Time JEE Battle Platform
 
 A competitive personal learning and testing platform where JEE aspirants battle each other in real-time. Students solve Physics, Chemistry, and Math questions with live rankings and adaptive scoring logic based on performance and difficulty.
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 JEE preparation often lacks the intensity of real-time competition. **RankED** bridges this gap by providing:
 - **Real-Time 1v1 & Group Battles**: High-pressure problem-solving environments.
@@ -13,7 +13,7 @@ JEE preparation often lacks the intensity of real-time competition. **RankED** b
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -25,7 +25,7 @@ JEE preparation often lacks the intensity of real-time competition. **RankED** b
 
 ---
 
-## 🧩 Architecture & Design Patterns
+## Architecture & Design Patterns
 
 RankED is built following **SOLID** principles and utilizes several key design patterns to ensure scalability and maintainability:
 
@@ -39,7 +39,7 @@ Detailed architectural documentation can be found in the **[Project_Report.md](P
 
 ---
 
-## 📁 System Requirements & Installation
+## System Requirements & Installation
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -49,7 +49,7 @@ Detailed architectural documentation can be found in the **[Project_Report.md](P
 ```bash
 cd backend
 npm install
-cp .env.example .env        # Fill in MONGO_URI and JWT_SECRET
+cp .env.example .env        # Fill in MONGO_URI, JWT_SECRET, and FRONTEND_URL
 node utils/seedQuestions.js # Seeds the question bank
 npm run dev                 # Starts on port 5001
 ```
@@ -64,7 +64,7 @@ npm start                   # Starts on port 3000
 
 ---
 
-## 👥 Meet the Team
+## Meet the Team
 
 | Name | Role | Primary Contributions |
 |---|---|---|
@@ -75,5 +75,3 @@ npm start                   # Starts on port 3000
 | **Ananya Narang** | UI/UX Developer | Frontend Pages, Styling, Component Architecture |
 
 ---
-
-

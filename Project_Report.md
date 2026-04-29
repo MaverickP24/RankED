@@ -1,18 +1,18 @@
-# RankED – System Design Project Report (Final Version)
+# RankED -- System Design Project Report (Final Version)
 
-## 🔹 Project Overview
+## Project Overview
 **RankED** is a real-time competitive learning platform designed for JEE aspirants. It simulates high-pressure exam environments through 1v1 battles, adaptive scoring, and live leaderboards. This version represents the optimized, production-ready codebase with refined UI and core services.
 
 ---
 
-## 🔹 System Design Optimization
+## System Design Optimization
 - **WebSocket-Driven Real-time Communication**: Sub-millisecond updates for game state.
 - **In-Memory Battle State**: The `GameEngine` manages active matches in a localized Map to reduce database hits during the heat of a "battle."
 - **Real-time Leaderboards**: Dynamic updates ensure students see their relative standing immediately after each submission.
 
 ---
 
-## 🔹 OOP Concepts Applied
+## OOP Concepts Applied
 1. **Encapsulation**: State protection in `GameEngine`.
 2. **Abstraction**: Abstract `ScoringStrategy` interfaces.
 3. **Inheritance**: Specialized Question types.
@@ -20,7 +20,7 @@
 
 ---
 
-## 🔹 Design Patterns
+## Design Patterns
 - **Factory Pattern**: `QuestionFactory.js`
 - **Strategy Pattern**: `ScoringStrategy.js`
 - **Observer Pattern**: `LeaderboardObserver.js`
@@ -29,15 +29,15 @@
 
 ---
 
-## 🔹 SOLID Principles
-- **S – Single Responsibility**: Classes like `SocketManager` handle WebSocket connectivity, while `GameEngine` manages game state.
-- **O – Open/Closed**: The scoring system is open for extension (new strategies) but closed for modification. (Swappable strategies).
+## SOLID Principles
+- **S -- Single Responsibility**: Classes like `SocketManager` handle WebSocket connectivity, while `GameEngine` manages game state.
+- **O -- Open/Closed**: The scoring system is open for extension (new strategies) but closed for modification. (Swappable strategies).
 - **I**: Interface Segregation (Observer updates).
 - **D**: Dependency Inversion (Socket context).
 
 ---
 
-## 🔹 Team Members & Contributions
+## Team Members & Contributions
 | Name | GitHub ID | Contribution |
 |---|---|---|
 | **MaverickP24** | [@MaverickP24](https://github.com/MaverickP24) | Project Lead, Backend Core, System Architecture, Sequence Diagram |
