@@ -29,7 +29,7 @@ async function seed() {
   await mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/ranked");
   await Question.deleteMany({});
   await Question.insertMany(seedQuestions);
-  console.log(`✅ Seeded ${seedQuestions.length} questions`);
+  console.log(`Seeded ${seedQuestions.length} questions`);
   process.exit(0);
 }
 
