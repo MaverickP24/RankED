@@ -36,30 +36,35 @@ const CreateBattle = () => {
   return (
     <div style={s.page}>
       <div style={s.card}>
-        <button style={s.back} onClick={() => navigate("/dashboard")}>← Back</button>
+        <button style={s.back} onClick={() => navigate("/dashboard")}>Back</button>
         <h2 style={s.title}>Configure Battle</h2>
-        <p style={s.sub}>Mode: <span style={{ color: "#7c3aed" }}>{form.mode.replace("_", " ")}</span></p>
+        <p style={s.sub}>Mode: <span style={{ color: "#7c3aed", fontWeight: 600 }}>{form.mode.replace("_", " ")}</span></p>
         {error && <div style={s.err}>{error}</div>}
         <form onSubmit={handleSubmit}>
           <div style={s.field}>
             <label style={s.label}>Subject (optional)</label>
-            <select style={s.input} value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })}>
+            <select style={s.input} id="battle-subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })}>
               <option value="">All Subjects</option>
-              {SUBJECTS.map((s) => <option key={s}>{s}</option>)}
+              {SUBJECTS.map((subj) => <option key={subj}>{subj}</option>)}
             </select>
           </div>
           <div style={s.field}>
             <label style={s.label}>Topic (optional)</label>
-            <input style={s.input} type="text" placeholder="e.g. Kinematics, Thermodynamics" value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} />
+            <input style={s.input} id="battle-topic" type="text" placeholder="e.g. Kinematics, Thermodynamics" value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} />
           </div>
           <div style={s.field}>
             <label style={s.label}>Scoring Strategy</label>
-            <select style={s.input} value={form.scoringStrategy} onChange={(e) => setForm({ ...form, scoringStrategy: e.target.value })}>
+            <select style={s.input} id="battle-strategy" value={form.scoringStrategy} onChange={(e) => setForm({ ...form, scoringStrategy: e.target.value })}>
               {STRATEGIES.map((st) => <option key={st.value} value={st.value}>{st.label}</option>)}
             </select>
           </div>
-          <button style={{ ...s.btn, opacity: loading ? 0.7 : 1 }} type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create Battle Room ⚡"}
+          <button
+            style={{ ...s.btn, opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+            type="submit"
+            id="create-battle-submit"
+            disabled={loading}
+          >
+            {loading ? "Creating..." : "Create Battle Room"}
           </button>
         </form>
       </div>
@@ -68,16 +73,85 @@ const CreateBattle = () => {
 };
 
 const s = {
-  page: { minHeight: "100vh", background: "#0f0f1a", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" },
-  card: { background: "#1a1a2e", border: "1px solid #2a2a4a", borderRadius: "16px", padding: "40px", width: "100%", maxWidth: "480px" },
-  back: { background: "transparent", border: "none", color: "#888", cursor: "pointer", fontSize: "14px", marginBottom: "20px", padding: 0 },
-  title: { color: "#fff", fontSize: "22px", fontWeight: "600", marginBottom: "6px" },
-  sub: { color: "#888", fontSize: "14px", marginBottom: "28px" },
-  err: { background: "#3d0000", color: "#ff6b6b", padding: "10px 14px", borderRadius: "8px", marginBottom: "18px", fontSize: "14px" },
-  field: { marginBottom: "18px" },
-  label: { display: "block", color: "#ccc", fontSize: "14px", marginBottom: "6px", fontWeight: "500" },
-  input: { width: "100%", background: "#0f0f1a", border: "1px solid #2a2a4a", borderRadius: "8px", padding: "12px 14px", color: "#fff", fontSize: "15px", boxSizing: "border-box" },
-  btn: { width: "100%", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", border: "none", borderRadius: "8px", padding: "13px", fontSize: "16px", fontWeight: "600", cursor: "pointer", marginTop: "6px" },
+  page: {
+    minHeight: "100vh",
+    background: "#09090b",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "24px",
+  },
+  card: {
+    background: "#141418",
+    border: "1px solid #27272a",
+    borderRadius: "12px",
+    padding: "36px",
+    width: "100%",
+    maxWidth: "440px",
+  },
+  back: {
+    background: "transparent",
+    border: "none",
+    color: "#71717a",
+    cursor: "pointer",
+    fontSize: "13px",
+    marginBottom: "20px",
+    padding: 0,
+  },
+  title: {
+    color: "#fafafa",
+    fontSize: "20px",
+    fontWeight: "600",
+    marginBottom: "4px",
+    letterSpacing: "-0.3px",
+  },
+  sub: {
+    color: "#71717a",
+    fontSize: "14px",
+    marginBottom: "24px",
+  },
+  err: {
+    background: "rgba(239, 68, 68, 0.1)",
+    color: "#ef4444",
+    padding: "10px 14px",
+    borderRadius: "8px",
+    marginBottom: "18px",
+    fontSize: "13px",
+    border: "1px solid rgba(239, 68, 68, 0.2)",
+  },
+  field: {
+    marginBottom: "16px",
+  },
+  label: {
+    display: "block",
+    color: "#a1a1aa",
+    fontSize: "13px",
+    marginBottom: "6px",
+    fontWeight: "500",
+  },
+  input: {
+    width: "100%",
+    background: "#09090b",
+    border: "1px solid #27272a",
+    borderRadius: "8px",
+    padding: "11px 14px",
+    color: "#fafafa",
+    fontSize: "14px",
+    boxSizing: "border-box",
+    outline: "none",
+  },
+  btn: {
+    width: "100%",
+    background: "#7c3aed",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    padding: "11px",
+    fontSize: "14px",
+    fontWeight: "600",
+    marginTop: "8px",
+    transition: "opacity 0.15s",
+  },
 };
 
 export default CreateBattle;
