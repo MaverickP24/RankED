@@ -144,88 +144,103 @@ const BattleArena = () => {
 
   const formatTime = (secs) => {
     const m = Math.floor(secs / 60).toString().padStart(2, "0");
-    const s = (secs % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
+    const sec = (secs % 60).toString().padStart(2, "0");
+    return `${m}:${sec}`;
   };
 
+  // --- ENDED STATE ---
   if (status === "ended") {
     const myEntry = leaderboard.find((e) => e.userId === user._id);
     const won = leaderboard[0]?.userId === user._id;
     return (
-      <div style={s.page}>
-        <div style={s.resultCard}>
-          <div style={{ fontSize: "60px", marginBottom: "16px" }}>{won ? "🏆" : "💪"}</div>
-          <h2 style={{ color: won ? "#FFD700" : "#fff", marginBottom: "8px" }}>{won ? "You Won!" : "Good Fight!"}</h2>
-          <div style={s.finalScore}>Your Score: {score}</div>
-          <div style={{ color: "#888", marginBottom: "24px" }}>Rank #{myEntry?.rank || "—"} in this battle</div>
-          <h3 style={{ color: "#fff", marginBottom: "12px" }}>Final Leaderboard</h3>
-          {leaderboard.map((p) => (
-            <div key={p.userId} style={{ ...s.lbRow, background: p.userId === user._id ? "#2a1a4a" : "transparent" }}>
-              <span style={s.lbRank}>#{p.rank}</span>
-              <span style={s.lbName}>{p.userName}</span>
-              <span style={{ color: "#7c3aed", fontWeight: 700 }}>{p.totalScore} pts</span>
-            </div>
-          ))}
-          <button style={s.backBtn} onClick={() => navigate("/dashboard")}>Back to Dashboard</button>
+      <div style={st.page}>
+        <div style={st.resultCard}>
+          <div style={{ fontSize: "14px", color: won ? "#10b981" : "#a1a1aa", fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>
+            {won ? "Victory" : "Battle Over"}
+          </div>
+          <h2 style={{ color: won ? "#10b981" : "#fafafa", marginBottom: "4px", fontSize: "24px", fontWeight: 700 }}>
+            {won ? "You Won!" : "Good Fight!"}
+          </h2>
+          <div style={st.finalScore}>{score} pts</div>
+          <div style={{ color: "#71717a", marginBottom: "28px", fontSize: "13px" }}>Rank #{myEntry?.rank || "--"} in this battle</div>
+
+          <div style={{ textAlign: "left", width: "100%" }}>
+            <h3 style={{ color: "#a1a1aa", fontSize: "12px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "12px" }}>Leaderboard</h3>
+            {leaderboard.map((p) => (
+              <div key={p.userId} style={{ ...st.lbRow, background: p.userId === user._id ? "rgba(124, 58, 237, 0.08)" : "transparent" }}>
+                <span style={st.lbRank}>#{p.rank}</span>
+                <span style={st.lbName}>{p.userName}</span>
+                <span style={{ color: "#7c3aed", fontWeight: 600, fontSize: "14px" }}>{p.totalScore}</span>
+              </div>
+            ))}
+          </div>
+          <button style={st.primaryBtn} id="back-to-dashboard" onClick={() => navigate("/dashboard")}>Back to Dashboard</button>
         </div>
       </div>
     );
   }
 
+  // --- WAITING STATE ---
   if (status === "waiting") {
     return (
-      <div style={s.page}>
-        <div style={s.waitCard}>
-          <div style={{ fontSize: "48px", marginBottom: "16px" }}>⏳</div>
-          <h2 style={{ color: "#fff" }}>Waiting for opponent...</h2>
-          <p style={{ color: "#888" }}>Match ID: <code style={{ color: "#7c3aed" }}>{matchId}</code></p>
-          <p style={{ color: "#888", fontSize: "14px" }}>Share this ID with a friend or click Start to begin</p>
-          <button style={s.startBtn} onClick={handleStartBattle}>Start Battle Now</button>
-          <button style={s.backBtn2} onClick={() => navigate("/dashboard")}>Cancel</button>
+      <div style={st.page}>
+        <div style={st.waitCard}>
+          <div style={st.waitingDot} />
+          <h2 style={{ color: "#fafafa", fontSize: "18px", fontWeight: 600, marginBottom: "8px" }}>Waiting for opponent</h2>
+          <p style={{ color: "#71717a", fontSize: "13px", marginBottom: "4px" }}>
+            Match ID: <code style={{ color: "#7c3aed", background: "#1e1e24", padding: "2px 8px", borderRadius: "4px", fontSize: "12px" }}>{matchId}</code>
+          </p>
+          <p style={{ color: "#52525b", fontSize: "12px", marginBottom: "24px" }}>Share this ID or click Start</p>
+          <button style={st.primaryBtn} id="start-battle" onClick={handleStartBattle}>Start Battle</button>
+          <button style={st.secondaryBtn} id="cancel-battle" onClick={() => navigate("/dashboard")}>Cancel</button>
         </div>
       </div>
     );
   }
 
+  // --- IN PROGRESS STATE ---
   return (
-    <div style={s.page}>
-      <div style={s.arena}>
-        {/* Left: Question panel */}
-        <div style={s.questionPanel}>
-          <div style={s.questionHeader}>
-            <span style={s.qCounter}>Q{currentIdx + 1}/{questions.length}</span>
-            <span style={s.subject}>{currentQ?.subject} · {currentQ?.topic}</span>
-            <span style={{ ...s.timer, color: timeLeft < 60 ? "#ff6b6b" : "#10b981" }}>⏱ {formatTime(timeLeft)}</span>
+    <div style={st.page}>
+      <div style={st.arena}>
+        {/* Question panel */}
+        <div style={st.questionPanel}>
+          <div style={st.questionHeader}>
+            <span style={st.qCounter}>Q{currentIdx + 1}/{questions.length}</span>
+            <span style={st.subject}>{currentQ?.subject} / {currentQ?.topic}</span>
+            <span style={{ ...st.timer, color: timeLeft < 60 ? "#ef4444" : "#10b981" }}>{formatTime(timeLeft)}</span>
           </div>
 
-          <div style={s.questionText}>{currentQ?.content}</div>
+          <div style={st.questionText}>{currentQ?.content}</div>
 
           {currentQ?.type === "MCQ" && (
-            <div style={s.options}>
-              {currentQ.options.map((opt, i) => (
-                <button
-                  key={i}
-                  style={{
-                    ...s.optBtn,
-                    borderColor: submitted
-                      ? i === currentQ.correctOption ? "#10b981" : i === selectedAnswer ? "#ff6b6b" : "#2a2a4a"
-                      : selectedAnswer === i ? "#7c3aed" : "#2a2a4a",
-                    background: submitted
-                      ? i === currentQ.correctOption ? "#0a2e1a" : i === selectedAnswer ? "#2e0a0a" : "transparent"
-                      : selectedAnswer === i ? "#1a0a3a" : "transparent",
-                  }}
-                  onClick={() => !submitted && setSelectedAnswer(i)}
-                >
-                  <span style={s.optLabel}>{String.fromCharCode(65 + i)}.</span> {opt}
-                </button>
-              ))}
+            <div style={st.options}>
+              {currentQ.options.map((opt, i) => {
+                let borderColor = "#27272a";
+                let bg = "transparent";
+                if (submitted) {
+                  if (i === currentQ.correctOption) { borderColor = "#10b981"; bg = "rgba(16, 185, 129, 0.06)"; }
+                  else if (i === selectedAnswer) { borderColor = "#ef4444"; bg = "rgba(239, 68, 68, 0.06)"; }
+                } else if (selectedAnswer === i) {
+                  borderColor = "#7c3aed"; bg = "rgba(124, 58, 237, 0.06)";
+                }
+                return (
+                  <button
+                    key={i}
+                    style={{ ...st.optBtn, borderColor, background: bg }}
+                    onClick={() => !submitted && setSelectedAnswer(i)}
+                  >
+                    <span style={st.optLabel}>{String.fromCharCode(65 + i)}.</span> {opt}
+                  </button>
+                );
+              })}
             </div>
           )}
 
           {currentQ?.type === "INTEGER" && (
             <input
-              style={s.intInput}
+              style={st.intInput}
               type="number"
+              id="integer-answer"
               placeholder="Enter integer answer"
               onChange={(e) => setSelectedAnswer(e.target.value)}
               disabled={submitted}
@@ -233,38 +248,48 @@ const BattleArena = () => {
           )}
 
           {result && (
-            <div style={{ ...s.resultBanner, background: result.isCorrect ? "#0a2e1a" : "#2e0a0a", borderColor: result.isCorrect ? "#10b981" : "#ff6b6b" }}>
-              {result.isCorrect ? "✅ Correct!" : "❌ Wrong"} &nbsp;·&nbsp; {result.awarded > 0 ? "+" : ""}{result.awarded} pts
+            <div style={{
+              ...st.resultBanner,
+              background: result.isCorrect ? "rgba(16, 185, 129, 0.06)" : "rgba(239, 68, 68, 0.06)",
+              borderColor: result.isCorrect ? "#10b981" : "#ef4444",
+              color: result.isCorrect ? "#10b981" : "#ef4444",
+            }}>
+              {result.isCorrect ? "Correct" : "Incorrect"} &middot; {result.awarded > 0 ? "+" : ""}{result.awarded} pts
             </div>
           )}
 
-          <div style={s.btnRow}>
+          <div style={st.btnRow}>
             {!submitted ? (
-              <button style={{ ...s.actionBtn, opacity: selectedAnswer === null ? 0.5 : 1 }} onClick={handleSubmitAnswer} disabled={selectedAnswer === null}>
+              <button
+                style={{ ...st.actionBtn, opacity: selectedAnswer === null ? 0.4 : 1, cursor: selectedAnswer === null ? "not-allowed" : "pointer" }}
+                id="submit-answer"
+                onClick={handleSubmitAnswer}
+                disabled={selectedAnswer === null}
+              >
                 Submit Answer
               </button>
             ) : (
-              <button style={s.actionBtn} onClick={handleNextQuestion}>
-                {currentIdx < questions.length - 1 ? "Next Question →" : "End Battle"}
+              <button style={st.actionBtn} id="next-question" onClick={handleNextQuestion}>
+                {currentIdx < questions.length - 1 ? "Next Question" : "End Battle"}
               </button>
             )}
           </div>
         </div>
 
-        {/* Right: Live leaderboard */}
-        <div style={s.sidebar}>
-          <div style={s.scoreBox}>
-            <div style={s.myScore}>{score}</div>
-            <div style={{ color: "#888", fontSize: "13px" }}>Your score</div>
+        {/* Sidebar */}
+        <div style={st.sidebar}>
+          <div style={st.scoreBox}>
+            <div style={st.myScore}>{score}</div>
+            <div style={{ color: "#71717a", fontSize: "12px" }}>Your score</div>
           </div>
-          <h3 style={s.lbTitle}>Live Leaderboard</h3>
+          <h3 style={st.lbTitle}>Leaderboard</h3>
           {leaderboard.length === 0 ? (
-            <div style={{ color: "#555", fontSize: "14px" }}>Waiting for submissions...</div>
+            <div style={{ color: "#52525b", fontSize: "13px" }}>Waiting for submissions...</div>
           ) : leaderboard.map((p) => (
-            <div key={p.userId} style={{ ...s.lbRow, background: p.userId === user._id ? "#1a0a3a" : "transparent" }}>
-              <span style={s.lbRank}>#{p.rank}</span>
-              <span style={s.lbName}>{p.userName}</span>
-              <span style={{ color: "#7c3aed", fontWeight: 700 }}>{p.totalScore}</span>
+            <div key={p.userId} style={{ ...st.lbRow, background: p.userId === user._id ? "rgba(124, 58, 237, 0.08)" : "transparent" }}>
+              <span style={st.lbRank}>#{p.rank}</span>
+              <span style={st.lbName}>{p.userName}</span>
+              <span style={{ color: "#7c3aed", fontWeight: 600, fontSize: "13px" }}>{p.totalScore}</span>
             </div>
           ))}
         </div>
@@ -273,35 +298,221 @@ const BattleArena = () => {
   );
 };
 
-const s = {
-  page: { minHeight: "100vh", background: "#0f0f1a", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" },
-  arena: { display: "grid", gridTemplateColumns: "1fr 280px", gap: "24px", width: "100%", maxWidth: "1100px", alignItems: "start" },
-  questionPanel: { background: "#1a1a2e", border: "1px solid #2a2a4a", borderRadius: "16px", padding: "28px" },
-  questionHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" },
-  qCounter: { background: "#2a2a4a", borderRadius: "20px", padding: "4px 12px", fontSize: "13px", color: "#ccc" },
-  subject: { color: "#888", fontSize: "13px" },
-  timer: { fontSize: "18px", fontWeight: "700" },
-  questionText: { fontSize: "17px", lineHeight: "1.6", color: "#f0f0f0", marginBottom: "24px" },
-  options: { display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" },
-  optBtn: { background: "transparent", border: "2px solid", borderRadius: "10px", padding: "14px 18px", color: "#fff", fontSize: "15px", cursor: "pointer", textAlign: "left", transition: "all 0.15s" },
-  optLabel: { color: "#7c3aed", fontWeight: "700", marginRight: "8px" },
-  intInput: { width: "100%", background: "#0f0f1a", border: "2px solid #2a2a4a", borderRadius: "10px", padding: "14px", color: "#fff", fontSize: "16px", marginBottom: "20px", boxSizing: "border-box" },
-  resultBanner: { border: "1px solid", borderRadius: "8px", padding: "12px 16px", marginBottom: "16px", fontSize: "15px", fontWeight: "600" },
-  btnRow: { display: "flex", gap: "12px" },
-  actionBtn: { background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", border: "none", borderRadius: "10px", padding: "13px 28px", fontSize: "15px", fontWeight: "600", cursor: "pointer" },
-  sidebar: { background: "#1a1a2e", border: "1px solid #2a2a4a", borderRadius: "16px", padding: "24px" },
-  scoreBox: { textAlign: "center", marginBottom: "24px", padding: "16px", background: "#0f0f1a", borderRadius: "12px" },
-  myScore: { fontSize: "42px", fontWeight: "700", color: "#7c3aed" },
-  lbTitle: { color: "#fff", fontSize: "15px", fontWeight: "600", marginBottom: "12px" },
-  lbRow: { display: "flex", alignItems: "center", gap: "10px", padding: "8px 10px", borderRadius: "8px", marginBottom: "6px" },
-  lbRank: { color: "#888", fontSize: "13px", width: "24px" },
-  lbName: { color: "#fff", fontSize: "14px", flex: 1 },
-  waitCard: { background: "#1a1a2e", border: "1px solid #2a2a4a", borderRadius: "16px", padding: "48px", textAlign: "center", maxWidth: "480px" },
-  startBtn: { background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", border: "none", borderRadius: "10px", padding: "13px 32px", fontSize: "16px", fontWeight: "600", cursor: "pointer", marginTop: "24px", display: "block", width: "100%" },
-  backBtn2: { background: "transparent", border: "1px solid #333", color: "#888", borderRadius: "10px", padding: "10px 32px", fontSize: "14px", cursor: "pointer", marginTop: "12px", width: "100%" },
-  resultCard: { background: "#1a1a2e", border: "1px solid #2a2a4a", borderRadius: "16px", padding: "48px", textAlign: "center", maxWidth: "480px", width: "100%" },
-  finalScore: { fontSize: "32px", fontWeight: "700", color: "#7c3aed", marginBottom: "8px" },
-  backBtn: { background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", border: "none", borderRadius: "10px", padding: "12px 28px", fontSize: "15px", cursor: "pointer", marginTop: "24px" },
+const st = {
+  page: {
+    minHeight: "100vh",
+    background: "#09090b",
+    color: "#fafafa",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "20px",
+  },
+  arena: {
+    display: "grid",
+    gridTemplateColumns: "1fr 260px",
+    gap: "20px",
+    width: "100%",
+    maxWidth: "1000px",
+    alignItems: "start",
+  },
+  questionPanel: {
+    background: "#141418",
+    border: "1px solid #27272a",
+    borderRadius: "10px",
+    padding: "28px",
+  },
+  questionHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "24px",
+  },
+  qCounter: {
+    background: "#1e1e24",
+    borderRadius: "6px",
+    padding: "4px 10px",
+    fontSize: "12px",
+    color: "#a1a1aa",
+    fontWeight: 600,
+  },
+  subject: {
+    color: "#71717a",
+    fontSize: "12px",
+  },
+  timer: {
+    fontSize: "16px",
+    fontWeight: "700",
+    fontVariantNumeric: "tabular-nums",
+  },
+  questionText: {
+    fontSize: "15px",
+    lineHeight: "1.7",
+    color: "#e4e4e7",
+    marginBottom: "24px",
+  },
+  options: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    marginBottom: "20px",
+  },
+  optBtn: {
+    background: "transparent",
+    border: "1px solid",
+    borderRadius: "8px",
+    padding: "12px 16px",
+    color: "#fafafa",
+    fontSize: "14px",
+    cursor: "pointer",
+    textAlign: "left",
+    transition: "border-color 0.15s, background 0.15s",
+  },
+  optLabel: {
+    color: "#7c3aed",
+    fontWeight: "600",
+    marginRight: "6px",
+  },
+  intInput: {
+    width: "100%",
+    background: "#09090b",
+    border: "1px solid #27272a",
+    borderRadius: "8px",
+    padding: "12px 14px",
+    color: "#fafafa",
+    fontSize: "14px",
+    marginBottom: "20px",
+    boxSizing: "border-box",
+    outline: "none",
+  },
+  resultBanner: {
+    border: "1px solid",
+    borderRadius: "8px",
+    padding: "10px 14px",
+    marginBottom: "16px",
+    fontSize: "13px",
+    fontWeight: "600",
+  },
+  btnRow: {
+    display: "flex",
+    gap: "10px",
+  },
+  actionBtn: {
+    background: "#7c3aed",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    padding: "11px 24px",
+    fontSize: "13px",
+    fontWeight: "600",
+    cursor: "pointer",
+    transition: "opacity 0.15s",
+  },
+  sidebar: {
+    background: "#141418",
+    border: "1px solid #27272a",
+    borderRadius: "10px",
+    padding: "22px",
+  },
+  scoreBox: {
+    textAlign: "center",
+    marginBottom: "20px",
+    padding: "14px",
+    background: "#09090b",
+    borderRadius: "8px",
+    border: "1px solid #1e1e24",
+  },
+  myScore: {
+    fontSize: "36px",
+    fontWeight: "700",
+    color: "#7c3aed",
+    fontVariantNumeric: "tabular-nums",
+  },
+  lbTitle: {
+    color: "#a1a1aa",
+    fontSize: "12px",
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+    marginBottom: "10px",
+  },
+  lbRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "7px 10px",
+    borderRadius: "6px",
+    marginBottom: "4px",
+  },
+  lbRank: {
+    color: "#71717a",
+    fontSize: "12px",
+    width: "24px",
+    fontWeight: 600,
+  },
+  lbName: {
+    color: "#fafafa",
+    fontSize: "13px",
+    flex: 1,
+  },
+  waitCard: {
+    background: "#141418",
+    border: "1px solid #27272a",
+    borderRadius: "12px",
+    padding: "44px",
+    textAlign: "center",
+    maxWidth: "420px",
+    width: "100%",
+  },
+  waitingDot: {
+    width: "10px",
+    height: "10px",
+    borderRadius: "50%",
+    background: "#7c3aed",
+    margin: "0 auto 20px",
+    animation: "pulse 1.5s ease-in-out infinite",
+  },
+  primaryBtn: {
+    background: "#7c3aed",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    padding: "11px 28px",
+    fontSize: "14px",
+    fontWeight: "600",
+    cursor: "pointer",
+    display: "block",
+    width: "100%",
+    transition: "opacity 0.15s",
+  },
+  secondaryBtn: {
+    background: "transparent",
+    border: "1px solid #27272a",
+    color: "#71717a",
+    borderRadius: "8px",
+    padding: "10px 28px",
+    fontSize: "13px",
+    cursor: "pointer",
+    marginTop: "10px",
+    width: "100%",
+    transition: "color 0.15s",
+  },
+  resultCard: {
+    background: "#141418",
+    border: "1px solid #27272a",
+    borderRadius: "12px",
+    padding: "44px",
+    textAlign: "center",
+    maxWidth: "440px",
+    width: "100%",
+  },
+  finalScore: {
+    fontSize: "36px",
+    fontWeight: "700",
+    color: "#7c3aed",
+    marginBottom: "4px",
+    fontVariantNumeric: "tabular-nums",
+  },
 };
 
 export default BattleArena;
