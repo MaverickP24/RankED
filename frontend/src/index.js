@@ -1,6 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import axios from "axios";
+
+// Set API base URL for production/development
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || "http://localhost:5001";
 
 // Reset browser defaults
 const globalStyle = document.createElement("style");
