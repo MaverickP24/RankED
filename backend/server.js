@@ -9,13 +9,22 @@ const SocketManager = require("./services/SocketManager");
 const app = express();
 const server = http.createServer(app);
 
+// CORS: support comma-separated origins in FRONTEND_URL (e.g. "https://app.vercel.app,http://localhost:3000")
+const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:3000")
+  .split(",")
+  .map((o) => o.trim());
+
+const corsOptions = {
+  origin: allowedOrigins.length === 1 ? allowedOrigins[0] : allowedOrigins,
+  methods: ["GET", "POST"],
+  credentials: true,
+};
+
 // Socket.IO setup
-const io = new Server(server, {
-  cors: { origin: process.env.FRONTEND_URL || "http://localhost:3000", methods: ["GET", "POST"] },
-});
+const io = new Server(server, { cors: corsOptions });
 
 // Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:3000" }));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Health check
