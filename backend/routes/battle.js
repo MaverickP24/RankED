@@ -19,6 +19,18 @@ router.post("/create", protect, async (req, res) => {
       });
 
       if (existingMatch) {
+        // Add the joining user to the match if not already present
+        const alreadyIn = existingMatch.players.find(
+          (p) => p.userId.toString() === req.user._id.toString()
+        );
+        if (!alreadyIn) {
+          existingMatch.players.push({
+            userId: req.user._id,
+            name: req.user.name,
+            isReady: true,
+          });
+          await existingMatch.save();
+        }
         return res.status(200).json({ success: true, matchId: existingMatch._id, match: existingMatch });
       }
     }
