@@ -25,10 +25,10 @@ const SUBJECTS = [
 ];
 
 const MOCK_TESTS = [
-  { title: "JEE Main Full Test", questions: 90, duration: "180 min", difficulty: "Mixed", strategy: "JEE_MAIN" },
-  { title: "JEE Advanced Paper", questions: 54, duration: "180 min", difficulty: "Hard", strategy: "JEE_ADVANCED" },
-  { title: "Speed Round", questions: 15, duration: "10 min", difficulty: "Medium", strategy: "SPEED_BASED" },
-  { title: "Difficulty Challenge", questions: 15, duration: "15 min", difficulty: "Hard", strategy: "DIFFICULTY_WEIGHTED" },
+  { title: "JEE Main Full Test", questions: 90, duration: "180 min", difficulty: "Mixed", strategy: "JEE_MAIN", scoring: "+4 correct, -1 wrong" },
+  { title: "JEE Advanced Paper", questions: 54, duration: "180 min", difficulty: "Hard", strategy: "JEE_ADVANCED", scoring: "+3 correct, -1 wrong" },
+  { title: "Speed Round", questions: 15, duration: "10 min", difficulty: "Medium", strategy: "SPEED_BASED", scoring: "Bonus for fast answers" },
+  { title: "Difficulty Challenge", questions: 15, duration: "15 min", difficulty: "Hard", strategy: "DIFFICULTY_WEIGHTED", scoring: "Harder questions = more points" },
 ];
 
 const STATS = [
@@ -185,6 +185,7 @@ const Dashboard = () => {
                     <span style={s.mockDivider} />
                     <span>{test.difficulty}</span>
                   </div>
+                  <div style={{ color: "#71717a", fontSize: "11px", marginTop: "6px" }}>{test.scoring}</div>
                 </div>
               ))}
             </div>
